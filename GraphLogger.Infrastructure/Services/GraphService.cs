@@ -1,4 +1,6 @@
-﻿using Microsoft.Graph;
+﻿using Azure.Identity;
+
+using Microsoft.Graph;
 using Microsoft.Graph.Models;
 using Microsoft.Graph.Models.Security;
 using Microsoft.Kiota.Abstractions.Authentication;
@@ -20,22 +22,22 @@ internal class GraphService : IGraphService
         // You can get GraphServiceClient by two options
 
         // Option 1
-        var token = new AccessTokenAuthenticationProvider(graphSetting.AzureSetting);
-        _graphClient = new GraphServiceClient(new BaseBearerTokenAuthenticationProvider(token));
+        //var token = new AccessTokenAuthenticationProvider(graphSetting.AzureSetting);
+        //_graphClient = new GraphServiceClient(new BaseBearerTokenAuthenticationProvider(token));
 
         // Option 2
-        //string[] scopes = { "https://graph.microsoft.com/.default" };
-        //ClientSecretCredential clientSecretCredential =
-        //    new(
-        //        config.AzureSetting.TenantId,
-        //        config.AzureSetting.ClientId,
-        //        config.AzureSetting.ClientSecret, 
-        //        new() 
-        //        { 
-        //            AuthorityHost = AzureAuthorityHosts.AzurePublicCloud 
-        //        }
-        //    );
-        //_graphClient = new(clientSecretCredential, scopes);
+        string[] scopes = { "https://graph.microsoft.com/.default" };
+        ClientSecretCredential clientSecretCredential =
+            new(
+                graphSetting.AzureSetting.TenantId,
+                graphSetting.AzureSetting.ClientId,
+                graphSetting.AzureSetting.ClientSecret,
+                new()
+                {
+                    AuthorityHost = AzureAuthorityHosts.AzurePublicCloud
+                }
+            );
+        _graphClient = new(clientSecretCredential, scopes);
     }
 
     public async Task LogsAsync(LogArgs args)
